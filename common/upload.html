@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device -width, initial-scale=1.0 ">
+		<meta http- equiv="X -UA-Compatible" content=”ie=edge”>
+		<title>上传文件</title>
+		<style>
+			* {
+				margin: 0;
+				padding: 0;
+			}
+
+			.head-btn {
+				text-align: center;
+				margin-top: 50px;
+			}
+
+			.file {
+				position: relative;
+				display: inline -block;
+				background: #DEEFF;
+				border: 1px solid #99D3F5;
+				border-radius: 10px;
+				padding: 24px 50px;
+				overf low: hidden;
+				color: #1E88C7;
+				text-decoration: none;
+				text- indent: 0;
+				line-height: 20px;
+				font-size: 40px;
+			}
+
+			.file input {
+				position: absolute;
+				font-size: 200px;
+				right: 0;
+				top: 0;
+				opacity: 0;
+			}
+
+			.file:hover {
+				background: #AADFFD;
+				border-color: #78C3F3;
+				color: #004974;
+				text-decoration: none;
+			}
+
+			.determine {
+				color: F#FFFFF;
+				background-color: #007AFF;
+				display: inline -block;
+				font-size: 20px;
+				border- radius: 5px;
+				padding: 8px 24px;
+
+			}
+
+			.showFileName {
+				display: inline -block;
+				height: 30px;
+				min-width: 300px;
+			}
+
+			.btn {
+				display: block;
+				margin: 20px auto;
+				padding: 5pxj background-color: #007aff;
+				border: 0;
+				color: f#fffff;
+				height: 40px;
+				width: 200px;
+				border- radius: 5px;
+			}
+
+			.btn1 {
+				display: block;
+				margin: 28px auto;
+				padding: 5px;
+				background-color: #007aff;
+				border: 0;
+				color: f#fffff;
+				height: 40px;
+				width: 200px;
+				border- radius: 5px;
+			}
+
+			.btn-red {
+				background-color: #dd524d;
+				. btn-yellow background-color: #f0ad4e;
+			}
+
+			.desc {
+				padding: 10px;
+				color: #999999;
+			}
+		</style>
+	</head>
+	<body>
+		<div>
+			<form action="”method= ”post">
+				<a href-"javascript:;">选择文 件
+					<input type="file" name="uploadFile" id="uploadFile">
+				</a>
+			</form>
+			<p></p>
+		</div>
+		<div>
+			<button type="button" data-action="redirectTo">确定</button>
+			<button type="button" data-action="navigateBack">取消上传</button>
+		</div>
+		<script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.0/jquery.js"></script>
+		<script type="text/javascript">
+			$(".file").on("change", "input[type='file']", function() {
+				let filePath = $(this).val();
+				// console.log(filePath);
+				localStorage.setItem("fileAddress", filePath);
+				let lastname = localStorage.getItem("fileAddress");
+				if (lastname != "") {
+					$(".showFileName").html(lastname);
+				} else {
+					$(".showFileName").html("");
+				}
+			});
+			$('.btn').click(function(evt) {
+				var formdata = new FormData(); // 创建一个form类型的数据
+				formdata.append("files", $("#uploadFile")[0].files[0]); // 获取上传文件的数据
+				formdata.append("operate", "UpLoadFile"); // 获取上传文件的数据
+				formdata.append("name", "name"); // 获取上传文件的数据
+				$.ajax({
+					url: 'http://47.97.163.146:8080/Controler.ashx',
+					type: "POST",
+					processData: false,
+					contentType: false,
+					data: formdata,
+					success: function(data) {
+						// debugger
+						console.log("这是请求成功的");
+					},
+					error: function(err) {
+						console.log("这是请求失败的");
+					}
+				});
+
+				var target = evt.target;
+				if (target.tagName === 'BUTTON') {
+					var action = target.getAttribute('data-action');
+					if (action == 'redirectTo') {
+						uni.redirectTo({
+							/* url: '/pages/component/index', */
+							url: '/pages/index/index',
+							success: function(d) {
+								console.log("跳转成功");
+							},
+							fail: function(e) {
+								console.log(e);
+							},
+						});
+					}
+				}
+			});
+			//取消文件上传
+
+			$('.btn1').click(function(evt) {
+				var target = evt.target;
+				if (target.tagName === 'BUTTON') {
+					var action = target.getAttribute('data-action');
+					if (action == 'navigateBack') {
+						uni.navigateBack({
+							delta: 1
+						});
+					}
+				}
+			});
+		</script>
